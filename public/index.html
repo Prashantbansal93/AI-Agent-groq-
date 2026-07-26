@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My AI Agent</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 40px auto; }
+    #chat { border: 1px solid #ccc; padding: 15px; min-height: 200px; margin-bottom: 10px; }
+    .msg { margin: 8px 0; }
+    input { width: 80%; padding: 8px; }
+    button { padding: 8px 16px; }
+  </style>
+</head>
+<body>
+  <h2>My AI Agent</h2>
+  <div id="chat"></div>
+  <input type="text" id="userInput" placeholder="Ask something..." />
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById('userInput');
+      const chat = document.getElementById('chat');
+      const text = input.value;
+      if (!text) return;
+
+      chat.innerHTML += `<div class="msg"><b>You:</b> ${text}</div>`;
+      input.value = '';
+
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text }),
+      });
+      const data = await res.json();
+
+      chat.innerHTML += `<div class="msg"><b>Agent:</b> ${data.reply}</div>`;
+      chat.scrollTop = chat.scrollHeight;
+    }
+  </script>
+</body>
+</html>
